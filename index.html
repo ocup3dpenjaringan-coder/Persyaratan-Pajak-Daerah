@@ -1,0 +1,938 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ceklist Persyaratan PBB</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: daftar berkas di kiri dengan kotak centang di tepi kanan tiap baris; panel hasil di kanan (di bawah daftar pada layar sempit). */
+:root {
+  --bg: #eef2f6;
+  --surface: #ffffff;
+  --ink: #14212d;
+  --muted: #5a6b79;
+  --line: #d8e0e8;
+  --head-bg: #f3f6f9;
+  --accent: #1d4ed8;
+  --accent-ink: #ffffff;
+  --ok: #107a55;
+  --ok-bg: #e8f6f0;
+  --opt-bg: #fdeedc;
+  --opt-ink: #8a4a07;
+  --focus: #1d4ed8;
+  --danger: #b42318;
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141b; --surface: #151f29; --ink: #e8eff5; --muted: #95a6b4; --line: #26343f;
+    --head-bg: #1a2631; --accent: #7aa2ff; --accent-ink: #0b1220; --ok: #43d09c; --ok-bg: #12312a;
+    --opt-bg: #33261a; --opt-ink: #f0b877; --focus: #7aa2ff; --danger: #ff8f84; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141b; --surface: #151f29; --ink: #e8eff5; --muted: #95a6b4; --line: #26343f;
+  --head-bg: #1a2631; --accent: #7aa2ff; --accent-ink: #0b1220; --ok: #43d09c; --ok-bg: #12312a;
+  --opt-bg: #33261a; --opt-ink: #f0b877; --focus: #7aa2ff; --danger: #ff8f84; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5;
+}
+.page {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+header.top { display: grid; gap: 4px; margin-bottom: 20px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { margin: 0; font-size: clamp(1.5rem, 4.2vw, 2.1rem); line-height: 1.15; font-weight: 800; text-wrap: balance; }
+.lead { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+
+.types { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.chip { font: inherit; font-weight: 700; font-size: 14px; letter-spacing: .02em; min-height: 44px; padding: 8px 18px; border-radius: 99px;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.fullname { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+.draftnote { margin: 0 0 16px; padding: 10px 12px; border-radius: 10px; background: var(--opt-bg); color: var(--opt-ink); font-size: 13px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 24px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+
+.who { display: grid; gap: 6px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.who label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+.who input {
+  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 12px; width: 100%; min-width: 0;
+}
+.who input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+.colhead { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 3rem; padding: 8px 0; background: var(--head-bg);
+  border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.colhead span:first-child { padding-left: 16px; }
+.colhead span:last-child { text-align: center; }
+
+.row { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 3rem; align-items: center; border-top: 1px solid var(--line); position: relative; }
+.row:first-child { border-top: 0; }
+.row .code { padding: 12px 0 12px 16px; font-weight: 700; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; align-self: start; padding-top: 14px; }
+.row .txt { padding: 12px 8px 12px calc(.25rem + var(--lvl, 0) * 1rem); min-width: 0; overflow-wrap: anywhere; }
+.row .note { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.row.head { background: var(--head-bg); }
+.row.head .txt { font-weight: 700; }
+.row.item { cursor: pointer; min-height: 54px; transition: background-color .12s; }
+.row.item:hover { background: var(--head-bg); }
+.row.item.opt { background: var(--opt-bg); }
+.row.item.on { background: var(--ok-bg); }
+.row.item.on .main { color: var(--ok); }
+.tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 99px; margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+.tag.opt { background: var(--surface); color: var(--opt-ink); border: 1px solid var(--opt-ink); }
+.tag.atau { background: transparent; color: var(--opt-ink); font-style: italic; }
+.row input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.cell { display: grid; place-items: center; align-self: stretch; }
+.box { width: 26px; height: 26px; border-radius: 7px; border: 2px solid var(--muted); background: var(--surface); position: relative; transition: background-color .12s, border-color .12s; }
+.box::after { content: ""; position: absolute; left: 7px; top: 2px; width: 6px; height: 12px; border: solid var(--accent-ink); border-width: 0 3px 3px 0; transform: rotate(45deg) scale(0); transition: transform .12s; }
+.row input:checked + .cell .box { background: var(--ok); border-color: var(--ok); }
+.row input:checked + .cell .box::after { transform: rotate(45deg) scale(1); border-color: #fff; }
+.row input:focus-visible + .cell .box { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+aside.panel { position: sticky; top: 16px; display: grid; }
+.panel .ph { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.panel h2 { margin: 0; font-size: 1rem; font-weight: 800; }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.count b { color: var(--ok); font-size: 1.25rem; font-weight: 800; }
+.out { list-style: none; margin: 0; padding: 0; max-height: min(52vh, 460px); overflow: auto; }
+.out li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0; padding: 10px 16px 10px 0; border-top: 1px solid var(--line); }
+.out li:first-child { border-top: 0; }
+.out .c { padding-left: 16px; }
+.out .c span { display: inline-block; background: var(--ok-bg); color: var(--ok); font-weight: 700; font-size: 12px; padding: 1px 7px; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.out .t { min-width: 0; overflow-wrap: anywhere; font-weight: 600; }
+.out .s { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+.empty { padding: 22px 16px; color: var(--muted); }
+.empty strong { display: block; color: var(--ink); margin-bottom: 4px; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 16px; border-top: 1px solid var(--line); background: var(--head-bg); }
+.btn {
+  font: inherit; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; padding: 8px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+  cursor: pointer; text-decoration: none; text-align: center;
+}
+.btn:hover:not([disabled]):not([aria-disabled="true"]) { border-color: var(--accent); }
+.btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.btn.wa { color: var(--ok); border-color: var(--ok); }
+.status { padding: 0 16px 14px; min-height: 0; font-size: 13px; color: var(--muted); background: var(--head-bg); }
+.status:empty { padding: 0; }
+.fallback { width: calc(100% - 32px); margin: 0 16px 14px; font: inherit; font-size: 13px; min-height: 110px; border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--surface); color: var(--ink); }
+.editbar, .addbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; background: var(--head-bg); }
+.editbar { border-bottom: 1px solid var(--line); }
+.addbar { border-top: 1px solid var(--line); }
+.sbtn { font: inherit; font-size: 13px; font-weight: 700; min-height: 40px; padding: 6px 12px; border-radius: 8px;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.sbtn:hover { border-color: var(--accent); }
+.sbtn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.sbtn:focus-visible, .ctl button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.editing .colhead { grid-template-columns: 3.4rem minmax(0, 1fr); }
+.editing .colhead span:last-child { display: none; }
+.row.edit { grid-template-columns: 3.4rem minmax(0, 1fr); cursor: auto; }
+.row.edit:hover { background: transparent; }
+.row.edit.head { background: var(--head-bg); }
+.row.edit .txt { display: grid; gap: 6px; padding-right: 12px; }
+.ed { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; min-width: 0; }
+.ed.note { font-size: 13px; }
+.row.edit.head .ed { font-weight: 700; }
+.ed:focus-visible, .blank-in:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.blank-in { font: inherit; color: var(--ink); background: transparent; border: 0; border-bottom: 2px dotted var(--muted); border-radius: 0; width: 100%; min-width: 0; padding: 4px 0; }
+.blank-in::placeholder { color: var(--muted); letter-spacing: .12em; }
+.ctl { display: flex; flex-wrap: wrap; gap: 6px; }
+.ctl button { font: inherit; font-size: 13px; font-weight: 700; min-width: 40px; min-height: 36px; padding: 0 10px; border-radius: 8px;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.ctl button[aria-pressed="true"] { background: var(--opt-bg); color: var(--opt-ink); border-color: var(--opt-ink); }
+.ctl .del { color: var(--danger); margin-left: auto; }
+.lbtns { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.reset { background: none; border: 0; font: inherit; font-size: 13px; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 6px 0; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+.bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  align-items: center; justify-content: space-between; gap: 12px; }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  aside.panel { position: static; }
+  .bar { display: flex; }
+  .page { padding-bottom: 96px; }
+  .out { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="page">
+  <header class="top">
+    <div class="eyebrow" id="eyebrow">Berkas permohonan SPOP / LSPOP</div>
+    <h1 id="judul">Ceklist Persyaratan PBB</h1>
+    <p class="lead">Pilih jenis pajak, lalu sentuh baris untuk mencentang berkas yang sudah lengkap. Daftarnya langsung muncul di panel hasil, lalu simpan sebagai gambar atau PDF untuk dikirim.</p>
+  </header>
+
+  <nav class="types" id="types" aria-label="Pilih jenis pajak"></nav>
+  <p class="fullname" id="fullname"></p>
+  <p class="draftnote" id="draftnote" hidden>Daftar persyaratan jenis pajak ini masih draf umum dan belum resmi. Sesuaikan dengan ketentuan daerah sebelum dipakai untuk melayani wajib pajak.</p>
+
+  <div class="layout">
+    <section aria-label="Daftar persyaratan">
+      <div class="card" id="listcard">
+        <div class="who">
+          <label for="nama">Nama pemohon (ikut tercetak di hasil)</label>
+          <input id="nama" type="text" autocomplete="off" placeholder="Contoh: Budi Santoso">
+          <label for="jenis" style="margin-top: 6px">Jenis permohonan</label>
+          <input id="jenis" type="text" list="jenisList" autocomplete="off" placeholder="Pilih atau ketik jenis permohonan">
+          <datalist id="jenisList">
+            <option value="Validasi BPHTB"></option>
+            <option value="Mutasi / balik nama"></option>
+            <option value="Pendaftaran objek pajak baru"></option>
+            <option value="Pemecahan objek pajak"></option>
+            <option value="Penggabungan objek pajak"></option>
+            <option value="Pembetulan data objek pajak"></option>
+          </datalist>
+        </div>
+        <div class="editbar" id="editbar" hidden>
+          <button class="sbtn primary" id="editDone" type="button">Selesai mengubah</button>
+          <button class="sbtn" id="blankAll" type="button">Kosongkan daftar</button>
+          <button class="sbtn" id="restore" type="button">Kembalikan daftar awal</button>
+        </div>
+        <div class="colhead"><span>No.</span><span>Persyaratan</span><span>Ada</span></div>
+        <div id="list"></div>
+        <div class="addbar" id="addbar" hidden>
+          <button class="sbtn" id="addItem" type="button">+ Tambah persyaratan</button>
+          <button class="sbtn" id="addBlank" type="button">+ Baris titik-titik</button>
+          <button class="sbtn" id="addHead" type="button">+ Judul kelompok</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span>Baris oranye bersifat opsional. Baris titik-titik bisa langsung diketik.</span>
+        <span class="lbtns">
+          <button class="reset" id="editToggle" type="button" aria-pressed="false">Ubah daftar</button>
+          <button class="reset" id="reset" type="button">Hapus semua centang</button>
+        </span>
+      </div>
+    </section>
+
+    <aside class="panel card" id="hasil" aria-label="Hasil ceklist">
+      <div class="ph">
+        <h2 id="hasilJudul">Persyaratan</h2>
+        <div class="count"><b id="n">0</b> dicentang</div>
+      </div>
+      <ol class="out" id="out" aria-live="polite"></ol>
+      <div class="actions">
+        <button class="btn primary" id="png" type="button">Screenshot Persyaratan</button>
+        <button class="btn primary" id="pdf" type="button">Simpan ke PDF</button>
+        <a class="btn wa" id="wa" href="#" target="_blank" rel="noopener">WhatsApp (teks)</a>
+        <a class="btn" id="mail" href="#">Email (teks)</a>
+        <button class="btn" id="copy" type="button" style="grid-column: 1 / -1">Salin teks</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+      <textarea class="fallback" id="fallback" readonly hidden aria-label="Teks hasil ceklist"></textarea>
+    </aside>
+  </div>
+</main>
+
+<div class="bar">
+  <span class="count"><b id="n2">0</b> berkas dicentang</span>
+  <button class="btn primary" id="jump" type="button">Lihat hasil</button>
+</div>
+
+<script>
+(function () {
+  var TITLE = "Ceklist Persyaratan PBB";
+  var PBB_DATA = [
+    { code: "1", text: "Surat permohonan" },
+    { code: "2", text: "Identitas berupa:", short: "Identitas", kids: [
+      { code: "2a", text: "Wajib Pajak Orang Pribadi", kids: [
+        { code: "2a.1", text: "KTP" },
+        { code: "2a.2", text: "Kartu Izin Tinggal Tetap (KITAP) untuk WNA" }
+      ]},
+      { code: "2b", text: "Wajib Pajak Badan", kids: [
+        { code: "2b.1", text: "Perizinan Berusaha (NIB)" },
+        { code: "2b.2", text: "NPWP Badan" },
+        { code: "2b.3", text: "KTP pengurus Badan" },
+        { code: "2b.4", text: "Akta Pendirian & Perubahannya" }
+      ]}
+    ]},
+    { code: "3", text: "Surat Kuasa & KTP Penerima Kuasa", note: "Jika dikuasakan" },
+    { code: "4", text: "Formulir SPOP & LSPOP diisi dan ditandatangani" },
+    { code: "4b", text: "Surat Keterangan Lurah PM1" },
+    { code: "5", text: "Fotokopi bukti peralihan / pengoperan", note: "Misal: Akta Jual Beli (AJB), Akta Hibah, Akta Waris, Risalah Lelang, dst." },
+    { code: "5b", text: "Fotokopi Akta / Surat Kematian", opt: true },
+    { code: "5c", text: "Fotokopi Surat / Buku Nikah", opt: true },
+    { code: "5d", text: "Fotokopi Keputusan Pengadilan yang sudah berkekuatan hukum tetap (Inkracht)", opt: true },
+    { code: "6", text: "Foto objek pajak" },
+    { code: "7a", text: "Fotokopi Izin Mendirikan Bangunan (IMB)", opt: true, atau: true },
+    { code: "7b", text: "Fotokopi Persetujuan Bangunan Gedung (PBG)", opt: true },
+    { code: "8", text: "Fotokopi SSPD BPHTB", opt: true },
+    { code: "9", text: "Fotokopi SPPT PBB tahun berjalan" },
+    { code: "10", text: "Tidak ada tunggakan PBB" },
+    { code: "", text: "Bukti kepemilikan tanah:", short: "Bukti kepemilikan tanah", kids: [
+      { code: "11a", text: "Fotokopi Sertifikat", note: "Jika sudah bersertifikat" },
+      { code: "11b", text: "Jika belum bersertifikat / sertifikat sudah habis masa berlakunya (mati)", short: "Belum bersertifikat / sertifikat mati", kids: [
+        { code: "11b.1", text: "FC Surat Kavling / Girik / Sertifikat Mati / dokumen sejenis lainnya" },
+        { code: "11b.2", text: "Surat Pernyataan Penguasaan Fisik" }
+      ]}
+    ]}
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var listEl = $("list"), outEl = $("out"), statusEl = $("status");
+  var leaves = [];
+  var checked = new Set();
+  var KEY = "ceklist-pbb-v2", KEY_OLD = "ceklist-pbb-v1";
+
+  function ident(n) {
+    return { code: n, text: "Identitas berupa:", short: "Identitas", kids: [
+      { code: n + "a", text: "Wajib Pajak Orang Pribadi", kids: [
+        { code: n + "a.1", text: "KTP" }
+      ]},
+      { code: n + "b", text: "Wajib Pajak Badan", kids: [
+        { code: n + "b.1", text: "Perizinan Berusaha (NIB)" },
+        { code: n + "b.2", text: "NPWP Badan" },
+        { code: n + "b.3", text: "KTP pengurus Badan" },
+        { code: n + "b.4", text: "Akta Pendirian & Perubahannya" }
+      ]}
+    ]};
+  }
+  var KUASA = { code: "3", text: "Surat Kuasa & KTP Penerima Kuasa", note: "Jika dikuasakan" };
+  var AJB = "Misal: Akta Jual Beli (AJB), Akta Hibah, Akta Waris, Risalah Lelang, dst.";
+
+  /* Hanya PBB yang berisi daftar resmi dari kantor. Jenis lain masih draf umum (draft: true). */
+  var TYPES = {
+    PBB: { label: "Pajak Bumi dan Bangunan", eyebrow: "Berkas permohonan SPOP / LSPOP", draft: false, data: PBB_DATA },
+    BPHTB: { label: "Bea Perolehan Hak atas Tanah dan Bangunan", eyebrow: "Berkas permohonan validasi BPHTB", draft: true, data: [
+      { code: "1", text: "Surat permohonan validasi BPHTB" },
+      ident("2"), KUASA,
+      { code: "4", text: "Formulir SSPD BPHTB diisi dan ditandatangani" },
+      { code: "5", text: "Fotokopi bukti peralihan hak", note: AJB },
+      { code: "6", text: "Fotokopi sertifikat / bukti kepemilikan tanah" },
+      { code: "7", text: "Fotokopi SPPT PBB tahun berjalan" },
+      { code: "8", text: "Tidak ada tunggakan PBB" },
+      { code: "9", text: "Foto objek pajak" },
+      { code: "10", text: "Fotokopi IMB / PBG", opt: true }
+    ]},
+    REKLAME: { label: "Pajak Reklame", eyebrow: "Berkas permohonan pajak reklame", draft: true, data: [
+      { code: "1", text: "Surat permohonan" },
+      ident("2"), KUASA,
+      { code: "4", text: "Gambar desain dan ukuran reklame (panjang, lebar, tinggi)" },
+      { code: "5", text: "Foto lokasi rencana pemasangan reklame" },
+      { code: "6", text: "Surat persetujuan pemilik lahan / bangunan lokasi pemasangan" },
+      { code: "7", text: "Bukti pelunasan pajak reklame sebelumnya", note: "Untuk perpanjangan", opt: true }
+    ]},
+    PAT: { label: "Pajak Air Tanah", eyebrow: "Berkas permohonan pajak air tanah", draft: true, data: [
+      { code: "1", text: "Surat permohonan" },
+      ident("2"), KUASA,
+      { code: "4", text: "Fotokopi izin pemanfaatan / pengambilan air tanah" },
+      { code: "5", text: "Foto sumur / titik pengambilan dan meter air" },
+      { code: "6", text: "Catatan pembacaan meter air terakhir" },
+      { code: "7", text: "Bukti pelunasan pajak periode sebelumnya", opt: true }
+    ]},
+    PBJT: { label: "Pajak Barang dan Jasa Tertentu", eyebrow: "Berkas permohonan PBJT", draft: true, data: [
+      { code: "1", text: "Surat permohonan" },
+      ident("2"), KUASA,
+      { code: "4", text: "Fotokopi NIB / izin usaha" },
+      { code: "5", text: "Fotokopi NPWP usaha" },
+      { code: "6", text: "Foto tempat usaha" },
+      { code: "7", text: "Laporan omzet / rekap transaksi bulan terakhir" }
+    ]},
+    PBBKB: { label: "Pajak Bahan Bakar Kendaraan Bermotor", eyebrow: "Berkas permohonan PBBKB", draft: true, data: [
+      { code: "1", text: "Surat permohonan" },
+      ident("2"), KUASA,
+      { code: "4", text: "Fotokopi izin usaha penyaluran / niaga bahan bakar" },
+      { code: "5", text: "Laporan volume penyaluran bahan bakar bulan terakhir" },
+      { code: "6", text: "Foto lokasi usaha (SPBU / depot)" },
+      { code: "7", text: "Bukti pelunasan pajak periode sebelumnya", opt: true }
+    ]}
+  };
+  var cur = "PBB";
+  var sets = {};
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* ---------- Data daftar: pohon bawaan diratakan jadi baris yang bisa diubah ---------- */
+  var BLANK = "..............................";
+  var lists = {}, edited = {}, defaults = {}, editing = false, uidn = 0;
+
+  function newId() { uidn++; return "u" + Date.now().toString(36) + uidn; }
+  function flatten(nodes, lvl, out) {
+    nodes.forEach(function (n) {
+      if (n.kids) {
+        out.push({ id: "h" + out.length + "-" + n.code, head: true, text: n.text, note: "", opt: false, atau: false, manual: false, short: n.short || "", lvl: lvl });
+        flatten(n.kids, lvl + 1, out);
+      } else {
+        out.push({ id: n.code, head: false, text: n.text, note: n.note || "", opt: !!n.opt, atau: !!n.atau, manual: false, short: "", lvl: lvl });
+      }
+    });
+    return out;
+  }
+  function clone(rows) { return JSON.parse(JSON.stringify(rows)); }
+  function rowsOf(code) {
+    if (lists[code]) return lists[code];
+    if (!defaults[code]) defaults[code] = flatten(TYPES[code].data, 0, []);
+    return defaults[code];
+  }
+  function isDraft() { return TYPES[cur].draft && !edited[cur]; }
+  function sanitize(arr) {
+    return arr.filter(function (r) { return r && typeof r === "object"; }).map(function (r) {
+      return { id: String(r.id || newId()), head: !!r.head, text: String(r.text || ""), note: String(r.note || ""),
+        opt: !!r.opt, atau: !!r.atau, manual: !!r.manual, short: String(r.short || ""),
+        lvl: Math.max(0, Math.min(3, parseInt(r.lvl, 10) || 0)) };
+    });
+  }
+  function touch() { edited[cur] = true; update(); }
+  function mutate() { edited[cur] = true; renderList(); update(); }
+
+  function renderList() {
+    if (editing && !lists[cur]) lists[cur] = clone(rowsOf(cur));
+    var rows = rowsOf(cur), stack = [], n = 0;
+    leaves = [];
+    listEl.textContent = "";
+    rows.forEach(function (r, i) {
+      var leaf = null;
+      stack = stack.slice(0, r.lvl);
+      if (r.head) {
+        stack[r.lvl] = (r.short || r.text.replace(/[:\s]+$/, "")).trim();
+      } else {
+        n++;
+        leaf = { id: r.id, no: n, ctx: stack.filter(Boolean), r: r };
+        Object.defineProperties(leaf, {
+          text: { get: function () { return r.text.trim() || BLANK; } },
+          note: { get: function () { return r.note.trim(); } },
+          opt: { get: function () { return !!r.opt; } }
+        });
+        leaves.push(leaf);
+      }
+      listEl.appendChild(editing ? editRow(r, i, rows, n) : viewRow(r, leaf));
+    });
+  }
+
+  function viewRow(r, leaf) {
+    if (r.head) {
+      var h = el("div", "row head");
+      h.style.setProperty("--lvl", r.lvl);
+      h.appendChild(el("span", "code", ""));
+      h.appendChild(el("span", "txt", r.text.trim() || BLANK));
+      h.appendChild(el("span"));
+      return h;
+    }
+    var row = el("label", "row item" + (r.opt ? " opt" : ""));
+    row.style.setProperty("--lvl", r.lvl);
+    row.dataset.id = r.id;
+    row.appendChild(el("span", "code", String(leaf.no)));
+    var txt = el("span", "txt");
+    if (r.manual || !r.text.trim()) {
+      var bi = el("input", "blank-in");
+      bi.type = "text"; bi.value = r.text; bi.placeholder = BLANK;
+      bi.setAttribute("aria-label", "Ketik persyaratan nomor " + leaf.no);
+      bi.addEventListener("input", function () { r.text = bi.value; touch(); });
+      txt.appendChild(bi);
+    } else {
+      txt.appendChild(el("span", "main", r.text));
+    }
+    if (r.opt) txt.appendChild(el("span", "tag opt", "Opsional"));
+    if (r.atau) txt.appendChild(el("span", "tag atau", "atau PBG"));
+    if (r.note.trim()) txt.appendChild(el("span", "note", r.note));
+    row.appendChild(txt);
+    var cb = el("input");
+    cb.type = "checkbox";
+    cb.id = "cb-" + r.id;
+    cb.checked = checked.has(r.id);
+    cb.addEventListener("change", function () {
+      if (cb.checked) checked.add(r.id); else checked.delete(r.id);
+      update();
+    });
+    row.appendChild(cb);
+    row.setAttribute("for", cb.id);
+    var cell = el("span", "cell");
+    cell.appendChild(el("span", "box"));
+    row.appendChild(cell);
+    return row;
+  }
+
+  function editRow(r, i, rows, no) {
+    var row = el("div", "row edit " + (r.head ? "head" : "item"));
+    row.style.setProperty("--lvl", r.lvl);
+    row.dataset.id = r.id;
+    row.appendChild(el("span", "code", r.head ? "" : String(no)));
+    var txt = el("div", "txt");
+    var inp = el("input", "ed");
+    inp.type = "text"; inp.value = r.text;
+    inp.placeholder = r.head ? "Judul kelompok" : BLANK;
+    inp.setAttribute("aria-label", r.head ? "Judul kelompok" : "Isi persyaratan nomor " + no);
+    inp.addEventListener("input", function () { r.text = inp.value; touch(); });
+    txt.appendChild(inp);
+    if (!r.head) {
+      var nt = el("input", "ed note");
+      nt.type = "text"; nt.value = r.note;
+      nt.placeholder = "Catatan kecil di bawah persyaratan (boleh kosong)";
+      nt.setAttribute("aria-label", "Catatan persyaratan nomor " + no);
+      nt.addEventListener("input", function () { r.note = nt.value; touch(); });
+      txt.appendChild(nt);
+    }
+    var ctl = el("div", "ctl");
+    function btn(label, aria, fn, cls) {
+      var b = el("button", cls || "", label);
+      b.type = "button"; b.title = aria; b.setAttribute("aria-label", aria);
+      b.addEventListener("click", fn);
+      ctl.appendChild(b);
+      return b;
+    }
+    btn("↑", "Pindah ke atas", function () { if (i > 0) { var t = rows[i - 1]; rows[i - 1] = rows[i]; rows[i] = t; mutate(); } });
+    btn("↓", "Pindah ke bawah", function () { if (i < rows.length - 1) { var t = rows[i + 1]; rows[i + 1] = rows[i]; rows[i] = t; mutate(); } });
+    btn("←", "Kurangi menjorok", function () { if (r.lvl > 0) { r.lvl--; mutate(); } });
+    btn("→", "Tambah menjorok", function () { if (r.lvl < 3) { r.lvl++; mutate(); } });
+    if (!r.head) {
+      var ob = btn("Opsional", "Tandai sebagai opsional", function () { r.opt = !r.opt; mutate(); });
+      ob.setAttribute("aria-pressed", r.opt ? "true" : "false");
+    }
+    var armed = false, timer = null;
+    var del = btn("Hapus", "Hapus baris ini", function () {
+      if (!armed) {
+        armed = true; del.textContent = "Yakin?";
+        timer = setTimeout(function () { armed = false; del.textContent = "Hapus"; }, 3000);
+        return;
+      }
+      clearTimeout(timer);
+      rows.splice(i, 1);
+      mutate();
+    }, "del");
+    txt.appendChild(ctl);
+    row.appendChild(txt);
+    return row;
+  }
+
+  function addRow(head, manual) {
+    var rows = rowsOf(cur), last = rows[rows.length - 1];
+    var lvl = head ? 0 : (last ? (last.head ? Math.min(3, last.lvl + 1) : last.lvl) : 0);
+    var r = { id: newId(), head: head, text: "", note: "", opt: false, atau: false, manual: !!manual, short: "", lvl: lvl };
+    rows.push(r);
+    mutate();
+    var f = listEl.querySelector('[data-id="' + r.id + '"] input.ed');
+    if (f) { f.focus(); try { f.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {} }
+  }
+  function blankAll() {
+    var rows = [];
+    for (var i = 0; i < 10; i++) rows.push({ id: newId(), head: false, text: "", note: "", opt: false, atau: false, manual: true, short: "", lvl: 0 });
+    lists[cur] = rows;
+    sets[cur] = new Set(); checked = sets[cur];
+    mutate();
+    say("Daftar dikosongkan jadi 10 baris titik-titik. Ketik langsung di barisnya, atau ubah lewat Ubah daftar.");
+  }
+  function restoreDefault() {
+    delete lists[cur]; delete edited[cur];
+    renderList(); update();
+    say("Daftar dikembalikan ke isi awal.");
+  }
+  function twoStep(btn, label, run) {
+    var t = null;
+    btn.addEventListener("click", function () {
+      if (!t) {
+        btn.textContent = "Yakin? Klik lagi";
+        t = setTimeout(function () { btn.textContent = label; t = null; }, 3500);
+        return;
+      }
+      clearTimeout(t); t = null; btn.textContent = label;
+      run();
+    });
+  }
+  function setEditing(on) {
+    editing = on;
+    $("editbar").hidden = !on;
+    $("addbar").hidden = !on;
+    $("listcard").classList.toggle("editing", on);
+    $("editToggle").textContent = on ? "Selesai mengubah" : "Ubah daftar";
+    $("editToggle").setAttribute("aria-pressed", on ? "true" : "false");
+    renderList(); update();
+  }
+  $("editToggle").addEventListener("click", function () { setEditing(!editing); });
+  $("editDone").addEventListener("click", function () { setEditing(false); });
+  $("addItem").addEventListener("click", function () { addRow(false, false); });
+  $("addBlank").addEventListener("click", function () { addRow(false, true); });
+  $("addHead").addEventListener("click", function () { addRow(true, false); });
+  twoStep($("blankAll"), "Kosongkan daftar", blankAll);
+  twoStep($("restore"), "Kembalikan daftar awal", restoreDefault);
+
+  var TITLE_BASE = "Ceklist Persyaratan ";
+  function setType(code) {
+    cur = code;
+    if (!sets[code]) sets[code] = new Set();
+    checked = sets[code];
+    TITLE = TITLE_BASE + code;
+    renderList();
+    $("judul").textContent = TITLE;
+    $("eyebrow").textContent = TYPES[code].eyebrow;
+    $("fullname").textContent = TYPES[code].label;
+    Array.prototype.forEach.call($("types").children, function (b) {
+      b.setAttribute("aria-pressed", b.dataset.type === code ? "true" : "false");
+    });
+    say("");
+    update();
+  }
+  Object.keys(TYPES).forEach(function (code) {
+    var b = el("button", "chip", code);
+    b.type = "button"; b.dataset.type = code; b.title = TYPES[code].label;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () { if (code !== cur) setType(code); });
+    $("types").appendChild(b);
+  });
+
+  function items() { return leaves.filter(function (l) { return checked.has(l.id); }); }
+  function nameVal() { return $("nama").value.trim(); }
+  function jenisVal() { return $("jenis").value.trim(); }
+  var JUDUL_JENIS = { "mutasi / balik nama": "Balik Nama / Mutasi" };
+  function judulHasil() {
+    var j = jenisVal();
+    if (!j) return "Persyaratan";
+    return "Persyaratan " + (JUDUL_JENIS[j.toLowerCase()] || j);
+  }
+  function dateStr() {
+    try { return new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }); }
+    catch (e) { return new Date().toDateString(); }
+  }
+  function sub(l) {
+    var parts = [];
+    if (l.ctx.length) parts.push(l.ctx.join(" › "));
+    if (l.note) parts.push(l.note);
+    if (l.opt) parts.push("Opsional");
+    return parts;
+  }
+
+  function buildText() {
+    var its = items(), t = [];
+    t.push(TITLE);
+    if (nameVal()) t.push("Pemohon: " + nameVal());
+    if (jenisVal()) t.push("Jenis permohonan: " + jenisVal());
+    if (isDraft()) t.push("(Draf persyaratan, belum resmi)");
+    t.push("Tanggal: " + dateStr());
+    t.push("");
+    t.push(judulHasil() + " (" + its.length + "):");
+    its.forEach(function (l, i) { t.push((i + 1) + ". ✓ " + l.text + (l.note ? " (" + l.note + ")" : "")); });
+    return t.join("\n");
+  }
+
+  function save() {
+    try {
+      var c = {};
+      Object.keys(sets).forEach(function (k) { c[k] = Array.from(sets[k]); });
+      var l = {};
+      Object.keys(lists).forEach(function (k) { if (edited[k]) l[k] = lists[k]; });
+      localStorage.setItem(KEY, JSON.stringify({ t: cur, c: c, l: l, n: $("nama").value, j: $("jenis").value }));
+    } catch (e) {}
+  }
+
+  function update() {
+    var its = items();
+    $("n").textContent = its.length;
+    $("n2").textContent = its.length;
+    $("hasilJudul").textContent = judulHasil();
+    $("draftnote").hidden = !isDraft();
+    listEl.querySelectorAll(".row.item").forEach(function (r) {
+      r.classList.toggle("on", checked.has(r.dataset.id));
+    });
+    outEl.textContent = "";
+    if (!its.length) {
+      var li = el("li", "empty");
+      li.appendChild(el("strong", null, "Belum ada yang dicentang"));
+      li.appendChild(document.createTextNode("Sentuh baris persyaratan di daftar. Berkas yang sudah lengkap akan tampil di sini."));
+      li.style.display = "block";
+      outEl.appendChild(li);
+    } else {
+      its.forEach(function (l, idx) {
+        var li = el("li");
+        var c = el("div", "c"); c.appendChild(el("span", null, String(idx + 1)));
+        var t = el("div", "t", l.text);
+        var s = sub(l);
+        if (s.length) t.appendChild(el("span", "s", s.join(" · ")));
+        li.appendChild(c); li.appendChild(t);
+        outEl.appendChild(li);
+      });
+    }
+    var none = its.length === 0;
+    ["png", "pdf", "copy"].forEach(function (id) { $(id).disabled = none; });
+    ["wa", "mail"].forEach(function (id) { $(id).setAttribute("aria-disabled", none ? "true" : "false"); });
+    var txt = buildText();
+    $("wa").href = none ? "#" : "https://wa.me/?text=" + encodeURIComponent(txt);
+    $("mail").href = none ? "#" : "mailto:?subject=" + encodeURIComponent(TITLE + (nameVal() ? " - " + nameVal() : "")) + "&body=" + encodeURIComponent(txt);
+    save();
+  }
+
+  ["wa", "mail"].forEach(function (id) {
+    $(id).addEventListener("click", function (e) {
+      if ($(id).getAttribute("aria-disabled") === "true") { e.preventDefault(); return; }
+      say(id === "wa" ? "WhatsApp dibuka di tab baru. Untuk mengirim gambar atau PDF, pakai Screenshot Persyaratan atau Simpan ke PDF, lalu lampirkan." : "Jika aplikasi email tidak terbuka, pakai Salin teks, atau buat Screenshot/PDF lalu lampirkan.");
+    });
+  });
+  $("nama").addEventListener("input", update);
+  $("jenis").addEventListener("input", update);
+
+  function say(msg) { statusEl.textContent = msg; }
+
+  /* ---------- Salin teks ---------- */
+  $("copy").addEventListener("click", function () {
+    var txt = buildText();
+    function fallback() {
+      var fb = $("fallback");
+      fb.hidden = false; fb.value = txt; fb.focus(); fb.select();
+      say("Teks sudah dipilih. Salin secara manual (tahan lalu pilih Salin).");
+    }
+    try {
+      navigator.clipboard.writeText(txt).then(function () { say("Teks tersalin. Tempel di WhatsApp atau email."); }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  /* ---------- Gambar & PDF ---------- */
+  var FF = '"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+
+  function wrap(g, text, maxW) {
+    var words = String(text).split(/\s+/), lines = [], cur = "";
+    words.forEach(function (w) {
+      var test = cur ? cur + " " + w : w;
+      if (g.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; } else { cur = test; }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  function renderPages() {
+    var its = items();
+    var W = 1240, H = 1754, M = 96, FOOT = 90, CODEW = 130;
+    var pages = [], c, g, y;
+    function newPage() {
+      c = document.createElement("canvas"); c.width = W; c.height = H;
+      g = c.getContext("2d"); g.fillStyle = "#ffffff"; g.fillRect(0, 0, W, H);
+      g.textBaseline = "alphabetic";
+      pages.push(c); y = M;
+    }
+    newPage();
+    g.fillStyle = "#1d4ed8"; g.fillRect(0, 0, W, 20);
+    y = M + 24;
+    g.fillStyle = "#5a6b79"; g.font = "700 22px " + FF;
+    g.fillText(TYPES[cur].eyebrow.toUpperCase(), M, y); y += 58;
+    g.fillStyle = "#14212d"; g.font = "800 54px " + FF;
+    g.fillText(TITLE, M, y); y += 52;
+    g.font = "500 28px " + FF; g.fillStyle = "#3c4b58";
+    if (nameVal()) {
+      wrap(g, "Pemohon: " + nameVal(), W - 2 * M).forEach(function (ln) { g.fillText(ln, M, y); y += 40; });
+    }
+    if (jenisVal()) {
+      wrap(g, "Jenis permohonan: " + jenisVal(), W - 2 * M).forEach(function (ln) { g.fillText(ln, M, y); y += 40; });
+    }
+    g.fillText("Tanggal: " + dateStr(), M, y); y += 36;
+    if (isDraft()) {
+      g.fillStyle = "#8a4a07"; g.font = "italic 400 23px " + FF;
+      g.fillText("Draf persyaratan, belum resmi", M, y); y += 34;
+      g.fillStyle = "#3c4b58"; g.font = "500 28px " + FF;
+    }
+    g.fillStyle = "#d8e0e8"; g.fillRect(M, y, W - 2 * M, 3); y += 52;
+    g.fillStyle = "#107a55"; g.font = "700 28px " + FF;
+    g.fillText(judulHasil() + " (" + its.length + ")", M, y); y += 34;
+
+    its.forEach(function (l, idx) {
+      var textX = M + CODEW, maxW = W - M - textX;
+      g.font = "600 30px " + FF;
+      var main = wrap(g, l.text, maxW);
+      g.font = "400 23px " + FF;
+      var subs = [];
+      sub(l).forEach(function (p) { wrap(g, p, maxW).forEach(function (ln) { subs.push(ln); }); });
+      var h = main.length * 40 + subs.length * 31 + 26;
+      if (y + h > H - FOOT) { newPage(); y = M; }
+      var top = y + 6;
+      g.fillStyle = "#107a55";
+      g.beginPath();
+      if (g.roundRect) g.roundRect(M, top + 4, 40, 40, 9); else g.rect(M, top + 4, 40, 40);
+      g.fill();
+      g.strokeStyle = "#ffffff"; g.lineWidth = 5; g.lineCap = "round"; g.lineJoin = "round";
+      g.beginPath(); g.moveTo(M + 10, top + 25); g.lineTo(M + 18, top + 33); g.lineTo(M + 31, top + 15); g.stroke();
+      g.fillStyle = "#5a6b79"; g.font = "700 24px " + FF;
+      g.fillText(String(idx + 1), M + 56, top + 33);
+      var ty = top + 33;
+      g.fillStyle = "#14212d"; g.font = "600 30px " + FF;
+      main.forEach(function (ln, i) { g.fillText(ln, textX, ty); if (i < main.length - 1) ty += 40; });
+      g.fillStyle = "#5a6b79"; g.font = "400 23px " + FF;
+      subs.forEach(function (ln) { ty += 31; g.fillText(ln, textX, ty); });
+      y += h;
+      g.fillStyle = "#e6ecf1"; g.fillRect(M, y - 9, W - 2 * M, 2);
+    });
+
+    pages.forEach(function (pc, i) {
+      var pg = pc.getContext("2d");
+      pg.fillStyle = "#8a98a4"; pg.font = "400 21px " + FF; pg.textBaseline = "alphabetic";
+      pg.fillText(TITLE, M, H - 52);
+      var lbl = "Halaman " + (i + 1) + " dari " + pages.length, w = pg.measureText(lbl).width;
+      pg.fillText(lbl, W - M - w, H - 52);
+    });
+    return pages;
+  }
+
+  function toBlob(canvas, type, q) {
+    return new Promise(function (res) { canvas.toBlob(res, type, q); });
+  }
+
+  function slug() {
+    var s = nameVal().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    return "ceklist-persyaratan-" + cur.toLowerCase() + (s ? "-" + s : "");
+  }
+
+  function buildPdf(jpegs) {
+    var enc = new TextEncoder(), parts = [], pos = 0, offs = [];
+    function push(x) { var b = typeof x === "string" ? enc.encode(x) : x; parts.push(b); pos += b.length; }
+    function obj(n, body) { offs[n] = pos; push(n + " 0 obj\n"); body(); push("endobj\n"); }
+    var N = jpegs.length, kids = [];
+    for (var i = 0; i < N; i++) kids.push((3 + 3 * i) + " 0 R");
+    push("%PDF-1.4\n");
+    obj(1, function () { push("<< /Type /Catalog /Pages 2 0 R >>\n"); });
+    obj(2, function () { push("<< /Type /Pages /Kids [" + kids.join(" ") + "] /Count " + N + " >>\n"); });
+    jpegs.forEach(function (j, i) {
+      var pn = 3 + 3 * i, cn = pn + 1, im = pn + 2;
+      obj(pn, function () { push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 " + im + " 0 R >> >> /Contents " + cn + " 0 R >>\n"); });
+      var content = "q 595 0 0 842 0 0 cm /Im0 Do Q";
+      obj(cn, function () { push("<< /Length " + content.length + " >>\nstream\n" + content + "\nendstream\n"); });
+      obj(im, function () {
+        push("<< /Type /XObject /Subtype /Image /Width " + j.w + " /Height " + j.h + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + j.bytes.length + " >>\nstream\n");
+        push(j.bytes); push("\nendstream\n");
+      });
+    });
+    var total = 3 + 3 * N, xrefPos = pos;
+    var x = "xref\n0 " + total + "\n0000000000 65535 f \n";
+    for (var k = 1; k < total; k++) x += ("0000000000" + offs[k]).slice(-10) + " 00000 n \n";
+    x += "trailer\n<< /Size " + total + " /Root 1 0 R >>\nstartxref\n" + xrefPos + "\n%%EOF\n";
+    push(x);
+    return new Blob(parts, { type: "application/pdf" });
+  }
+
+  var dlPromise = null;
+  function getDl() {
+    if (!dlPromise) {
+      dlPromise = (window.claude && window.claude.use) ? window.claude.use("downloads").catch(function () { return null; }) : Promise.resolve(null);
+    }
+    return dlPromise;
+  }
+
+  async function ensureFonts() {
+    try {
+      await Promise.all([
+        document.fonts.load('400 23px "Plus Jakarta Sans"'), document.fonts.load('600 30px "Plus Jakarta Sans"'),
+        document.fonts.load('700 24px "Plus Jakarta Sans"'), document.fonts.load('800 54px "Plus Jakarta Sans"')
+      ]);
+    } catch (e) {}
+  }
+
+  function anchorDownload(blob, name) {
+    var url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = name; a.style.display = "none";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
+  }
+
+  async function exportFile(kind) {
+    if (!items().length) return;
+    var isPng = kind === "png";
+    say(isPng ? "Menyiapkan screenshot..." : "Menyiapkan PDF...");
+    try {
+      await ensureFonts();
+      var pages = renderPages(), blob, name, mime;
+      if (isPng) {
+        var cv = pages[0];
+        if (pages.length > 1) {
+          cv = document.createElement("canvas"); cv.width = pages[0].width; cv.height = pages[0].height * pages.length;
+          var cg = cv.getContext("2d");
+          pages.forEach(function (p, i) { cg.drawImage(p, 0, i * p.height); });
+        }
+        blob = await toBlob(cv, "image/png"); name = slug() + ".png"; mime = "image/png";
+      } else {
+        var jp = [];
+        for (var i = 0; i < pages.length; i++) {
+          var b = await toBlob(pages[i], "image/jpeg", 0.92);
+          jp.push({ w: pages[i].width, h: pages[i].height, bytes: new Uint8Array(await b.arrayBuffer()) });
+        }
+        blob = buildPdf(jp); name = slug() + ".pdf"; mime = "application/pdf";
+      }
+
+      /* 1) Screenshot: buka menu bagikan (WhatsApp, Email, dll.) bila perangkat mendukung */
+      if (isPng && navigator.canShare && navigator.share) {
+        try {
+          var file = new File([blob], name, { type: mime });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: judulHasil() + (nameVal() ? " - " + nameVal() : "") });
+            say("Screenshot siap dikirim lewat menu bagikan (WhatsApp, Email, dll.).");
+            return;
+          }
+        } catch (e) {
+          if (e && e.name === "AbortError") { say("Pengiriman dibatalkan."); return; }
+        }
+      }
+
+      /* 2) Penyimpanan bawaan aplikasi (bila ada), 3) unduh biasa lewat browser */
+      var dl = await getDl();
+      if (dl) {
+        await dl.save({ filename: name, data: blob });
+      } else {
+        anchorDownload(blob, name);
+      }
+      say("Tersimpan sebagai " + name + ". Lampirkan file ini di WhatsApp atau email.");
+    } catch (err) {
+      var code = err && err.code;
+      if (code === "declined") say("Penyimpanan dibatalkan.");
+      else if (code === "host_unavailable") say("Aplikasi ini belum bisa menyimpan file. Buka halaman ini di browser atau komputer.");
+      else if (code === "rate_limited") say("Terlalu cepat. Tunggu sebentar lalu coba lagi.");
+      else say("File belum bisa disimpan. Coba lagi, atau pakai Salin teks.");
+    }
+  }
+  $("png").addEventListener("click", function () { exportFile("png"); });
+  $("pdf").addEventListener("click", function () { exportFile("pdf"); });
+
+  /* ---------- Reset & lompat ---------- */
+  var resetTimer = null;
+  $("reset").addEventListener("click", function () {
+    var b = $("reset");
+    if (!resetTimer) {
+      b.textContent = "Yakin? Klik lagi untuk menghapus";
+      resetTimer = setTimeout(function () { b.textContent = "Hapus semua centang"; resetTimer = null; }, 3500);
+      return;
+    }
+    clearTimeout(resetTimer); resetTimer = null; b.textContent = "Hapus semua centang";
+    checked.clear();
+    listEl.querySelectorAll("input[type=checkbox]").forEach(function (i) { i.checked = false; });
+    say(""); update();
+  });
+  $("jump").addEventListener("click", function () {
+    $("hasil").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* ---------- Pulihkan dari penyimpanan browser ---------- */
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (!saved) {
+      var old = JSON.parse(localStorage.getItem(KEY_OLD) || "null");
+      if (old) saved = { t: "PBB", c: { PBB: old.c || [] }, n: old.n, j: old.j };
+    }
+    if (saved) {
+      Object.keys(saved.c || {}).forEach(function (k) {
+        if (TYPES[k]) sets[k] = new Set(saved.c[k]);
+      });
+      Object.keys(saved.l || {}).forEach(function (k) {
+        if (TYPES[k] && Array.isArray(saved.l[k])) { lists[k] = sanitize(saved.l[k]); edited[k] = true; }
+      });
+      if (saved.n) $("nama").value = saved.n;
+      if (saved.j) $("jenis").value = saved.j;
+      if (saved.t && TYPES[saved.t]) cur = saved.t;
+    }
+  } catch (e) {}
+  setType(cur);
+
+  getDl().then(function (d) {
+    if (!d) say("Simpan file hanya tersedia saat halaman dibuka di Claude atau browser yang mendukung. Salin teks dan WhatsApp tetap bisa dipakai.");
+  });
+})();
+</script>
+
+</body></html>
