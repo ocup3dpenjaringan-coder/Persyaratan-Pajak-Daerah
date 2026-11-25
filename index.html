@@ -269,6 +269,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
     { code: "7b", text: "Fotokopi Persetujuan Bangunan Gedung (PBG)", opt: true },
     { code: "8", text: "Fotokopi SSPD BPHTB", opt: true },
     { code: "9", text: "Fotokopi SPPT PBB tahun berjalan" },
+    { code: "9b", text: "Fotokopi SPPT PBB yang berdekatan" },
     { code: "10", text: "Tidak ada tunggakan PBB" },
     { code: "", text: "Bukti kepemilikan tanah:", short: "Bukti kepemilikan tanah", kids: [
       { code: "11a", text: "Fotokopi Sertifikat", note: "Jika sudah bersertifikat" },
@@ -276,7 +277,10 @@ aside.panel { position: sticky; top: 16px; display: grid; }
         { code: "11b.1", text: "FC Surat Kavling / Girik / Sertifikat Mati / dokumen sejenis lainnya" },
         { code: "11b.2", text: "Surat Pernyataan Penguasaan Fisik" }
       ]}
-    ]}
+    ]},
+    { code: "x1", text: "", manual: true },
+    { code: "x2", text: "", manual: true },
+    { code: "x3", text: "", manual: true }
   ];
 
   var $ = function (id) { return document.getElementById(id); };
@@ -348,6 +352,10 @@ aside.panel { position: sticky; top: 16px; display: grid; }
       { code: "7", text: "Bukti pelunasan pajak periode sebelumnya", opt: true }
     ]}
   };
+  Object.keys(TYPES).forEach(function (k) {
+    if (k === "PBB") return;
+    ["x1", "x2", "x3"].forEach(function (c) { TYPES[k].data.push({ code: c, text: "", manual: true }); });
+  });
   var cur = "PBB";
   var sets = {};
 
@@ -360,7 +368,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
 
   /* ---------- Data daftar: pohon bawaan diratakan jadi baris yang bisa diubah ---------- */
   var BLANK = "..............................";
-  var lists = {}, edited = {}, defaults = {}, editing = false, uidn = 0;
+  var lists = {}, edited = {}, typedBl = {}, defaults = {}, editing = false, uidn = 0;
 
   function newId() { uidn++; return "u" + Date.now().toString(36) + uidn; }
   function flatten(nodes, lvl, out) {
@@ -369,7 +377,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
         out.push({ id: "h" + out.length + "-" + n.code, head: true, text: n.text, note: "", opt: false, atau: false, manual: false, short: n.short || "", lvl: lvl });
         flatten(n.kids, lvl + 1, out);
       } else {
-        out.push({ id: n.code, head: false, text: n.text, note: n.note || "", opt: !!n.opt, atau: !!n.atau, manual: false, short: "", lvl: lvl });
+        out.push({ id: n.code, head: false, text: n.text, note: n.note || "", opt: !!n.opt, atau: !!n.atau, manual: !!n.manual, short: "", lvl: lvl });
       }
     });
     return out;
@@ -433,7 +441,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
       var bi = el("input", "blank-in");
       bi.type = "text"; bi.value = r.text; bi.placeholder = BLANK;
       bi.setAttribute("aria-label", "Ketik persyaratan nomor " + leaf.no);
-      bi.addEventListener("input", function () { r.text = bi.value; touch(); });
+      bi.addEventListener("input", function () { r.text = bi.value; typedBl[cur] = true; update(); });
       txt.appendChild(bi);
     } else {
       txt.appendChild(el("span", "main", r.text));
@@ -528,7 +536,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
     say("Daftar dikosongkan jadi 10 baris titik-titik. Ketik langsung di barisnya, atau ubah lewat Ubah daftar.");
   }
   function restoreDefault() {
-    delete lists[cur]; delete edited[cur];
+    delete lists[cur]; delete edited[cur]; delete typedBl[cur]; delete defaults[cur];
     renderList(); update();
     say("Daftar dikembalikan ke isi awal.");
   }
@@ -624,8 +632,8 @@ aside.panel { position: sticky; top: 16px; display: grid; }
       var c = {};
       Object.keys(sets).forEach(function (k) { c[k] = Array.from(sets[k]); });
       var l = {};
-      Object.keys(lists).forEach(function (k) { if (edited[k]) l[k] = lists[k]; });
-      localStorage.setItem(KEY, JSON.stringify({ t: cur, c: c, l: l, n: $("nama").value, j: $("jenis").value }));
+      Object.keys(TYPES).forEach(function (k) { if (edited[k] || typedBl[k]) l[k] = rowsOf(k); });
+      localStorage.setItem(KEY, JSON.stringify({ t: cur, c: c, l: l, e: edited, n: $("nama").value, j: $("jenis").value }));
     } catch (e) {}
   }
 
@@ -920,7 +928,7 @@ aside.panel { position: sticky; top: 16px; display: grid; }
         if (TYPES[k]) sets[k] = new Set(saved.c[k]);
       });
       Object.keys(saved.l || {}).forEach(function (k) {
-        if (TYPES[k] && Array.isArray(saved.l[k])) { lists[k] = sanitize(saved.l[k]); edited[k] = true; }
+        if (TYPES[k] && Array.isArray(saved.l[k])) { lists[k] = sanitize(saved.l[k]); edited[k] = saved.e ? !!saved.e[k] : true; if (!edited[k]) typedBl[k] = true; }
       });
       if (saved.n) $("nama").value = saved.n;
       if (saved.j) $("jenis").value = saved.j;
